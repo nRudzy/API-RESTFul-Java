@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
+
+    <display-name>Mes Copains !</display-name>
+    <!--
+     Définition des JSP
+         Elles sont définies ici car il faut qu'elles aient un nom dans le contexte pour pouvoir utiliser des NamedDispatcher.
+         Mais pour ça, il faut qu'elles aient aussi un url-pattern -> Bloquer les URL en .jsp dans le filtre d'authentification...
+    -->
+    <servlet>
+        <servlet-name>billet-vue</servlet-name>
+        <jsp-file>/WEB-INF/jsp/billet.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>billet-vue</servlet-name>
+        <url-pattern>/billet.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>groupes-vue</servlet-name>
+        <jsp-file>/WEB-INF/jsp/groupes.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>groupes-vue</servlet-name>
+        <url-pattern>/groupes.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>header-vue</servlet-name>
+        <jsp-file>/WEB-INF/jsp/header.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>header-vue</servlet-name>
+        <url-pattern>/header.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>menuPrincipal-vue</servlet-name>
+        <jsp-file>/WEB-INF/jsp/menuPrincipal.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>menuPrincipal-vue</servlet-name>
+        <url-pattern>/menuPrincipal.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>saisie-vue</servlet-name>
+        <jsp-file>/WEB-INF/jsp/saisie.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>saisie-vue</servlet-name>
+        <url-pattern>/saisie.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>groupes</servlet-name>
+        <servlet-class>fr.univlyon1.m1if.m1if03.servlets.MenuGroupesServlet</servlet-class>
+    </servlet>
+
+    <!--
+     Définition des filtres :
+         - l'ordre d'application des filtres est celui de leur définition dans le fichier web.xml.
+         - Le filtre d'authenfification a un paramètre whitelist qui laisse passer les couples méthode / URL dedans.
+         - Le filtre de négociation de contenus doit être le dernier de la chaîne pour pouvoir écrire dans la réponse.
+    -->
+
+    <filter>
+        <filter-name>CorsFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+
+        <init-param>
+            <param-name>cors.allowed.origins</param-name>
+            <param-value>http://editor.swagger.io</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.allowed.methods</param-name>
+            <param-value>GET,POST,PUT,DELETE</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.support.credentials</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>CorsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>Authentication</filter-name>
+        <filter-class>fr.univlyon1.m1if.m1if03.servlets.LoginFilter</filter-class>
+        <init-param>
+            <param-name>whitelist</param-name>
+            <param-value>
+                GET:/,GET:/index.html,GET:/css/copains.css,GET:/groupes,POST:/users/login,POST:/users/login
+            </param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Authentication</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>Authorization</filter-name>
+        <filter-class>fr.univlyon1.m1if.m1if03.servlets.BilletFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Authorization</filter-name>
+        <url-pattern>/billets</url-pattern>
+        <url-pattern>/billets/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>ContentNegotiation</filter-name>
+        <filter-class>fr.univlyon1.m1if.m1if03.servlets.ContentNegotiation</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ContentNegotiation</filter-name>
+        <url-pattern>/groupes</url-pattern>
+        <url-pattern>/groupes/*</url-pattern>
+    </filter-mapping>
+
+
+    <!--<filter-mapping>-->
+    <!--<filter-name>ContentNegotiation</filter-name>-->
+    <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
+    <servlet>
+        <servlet-name>Init</servlet-name>
+        <servlet-class>fr.univlyon1.m1if.m1if03.servlets.Init</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Init</servlet-name>
+        <url-pattern>/Init</url-pattern>
+    </servlet-mapping>
+
+	<servlet>
+		<servlet-name>Deco</servlet-name>
+		<servlet-class>fr.univlyon1.m1if.m1if03.servlets.DeconnexionServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Deco</servlet-name>
+		<url-pattern>/Deco</url-pattern>
+	</servlet-mapping>
+
+    <servlet>
+        <servlet-name>Routeur</servlet-name>
+        <servlet-class>fr.univlyon1.m1if.m1if03.servlets.Router</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Routeur</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

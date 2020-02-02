@@ -1,0 +1,18 @@
+{
+  "nom": "A",
+  "description": "Voici une belle description",
+  "proprietaire": "Toto",
+  "participants": [
+    "Toto",
+    "Titi"
+  ],
+  "gBillets": {
+    "billets": [
+      {
+        "titre": "titre1",
+        "contenu": "blablabla",
+        "auteur": "Toto"
+      }
+    ]
+  }
+}

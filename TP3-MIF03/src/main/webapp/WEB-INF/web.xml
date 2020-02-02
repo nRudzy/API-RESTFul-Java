@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <servlet>
+    <servlet-name>Billet</servlet-name>
+    <servlet-class>fr.univlyon1.m1if.m1if03.servlets.BilletServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Billet</servlet-name>
+    <url-pattern>/Billet/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SaisieBillet</servlet-name>
+    <servlet-class>fr.univlyon1.m1if.m1if03.servlets.SaisieBilletServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaisieBillet</servlet-name>
+    <url-pattern>/SaisieBillet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Init</servlet-name>
+    <servlet-class>fr.univlyon1.m1if.m1if03.servlets.Init</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Init</servlet-name>
+    <url-pattern>/Init</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Deco</servlet-name>
+    <servlet-class>fr.univlyon1.m1if.m1if03.servlets.DeconnexionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Deco</servlet-name>
+    <url-pattern>/Deco</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>MenuPrincipal</servlet-name>
+    <servlet-class>fr.univlyon1.m1if.m1if03.servlets.MenuPrincipalServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MenuPrincipal</servlet-name>
+    <url-pattern>/MenuPrincipal</url-pattern>
+  </servlet-mapping>
+
+
+<!--  Filtres -->
+  <filter>
+    <filter-name>AuthenticationFilter</filter-name>
+    <filter-class>fr.univlyon1.m1if.m1if03.servlets.LoginFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>/Init/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>AutorisationFilter</filter-name>
+    <filter-class>fr.univlyon1.m1if.m1if03.servlets.BilletFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>AutorisationFilter</filter-name>
+    <url-pattern>/Billet/*</url-pattern>
+  </filter-mapping>
+
+
+
+</web-app>

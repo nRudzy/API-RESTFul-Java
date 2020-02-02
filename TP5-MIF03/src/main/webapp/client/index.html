@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Copains (AJAX)</title>
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/1/12/1password2018.png"/>
+    <script src="../js/ajax.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://bootswatch.com/4/sandstone/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+
+</head>
+
+<!--Chargement de l'horloge au chargement de la page-->
+<body onload="runAfficheHorlogeSVG('GET','time.jsp')">
+
+<nav class="navSite navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="index.html">Mes copains (en AJAX)</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" id="nav-index" href='#index'>Accueil</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='#groupes'>Groupes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='#groupe'>Groupe</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='#billet'>Billet</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='#users'>Utilisateurs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href='#deco'>Déconnexion</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<svg width="200" height="200">
+
+    <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+        <feOffset in="blur" dx="2.5" dy="2.5"/>
+    </filter>
+
+    <g>
+        <circle id="shadow" style="fill:rgb(190,182,191)" cx="97" cy="100" r="87" filter="url(#innerShadow)"></circle>
+        <circle id="circle" style="stroke: #20b7af; stroke-width: 12px; fill:#ffffff" cx="100" cy="100" r="80"></circle>
+    </g>
+    <g>
+        <line x1="100" y1="100" x2="100" y2="55" transform="rotate(80 100 100)"
+              style="stroke-width: 3px; stroke: #20b7af;" id="hourhand">
+            <animatetransform attributeName="transform"
+                              attributeType="XML"
+                              type="rotate"
+                              dur="43200s"
+                              repeatCount="indefinite"/>
+        </line>
+        <line x1="100" y1="100" x2="100" y2="40" style="stroke-width: 4px; stroke: #20b7af;" id="minutehand">
+            <animatetransform attributeName="transform"
+                              attributeType="XML"
+                              type="rotate"
+                              dur="3600s"
+                              repeatCount="indefinite"/>
+        </line>
+        <line x1="100" y1="100" x2="100" y2="30" style="stroke-width: 2px; stroke: #20b7af;" id="secondhand">
+            <animatetransform attributeName="transform"
+                              attributeType="XML"
+                              type="rotate"
+                              dur="60s"
+                              repeatCount="indefinite"/>
+        </line>
+    </g>
+    <circle id="center" style="fill:#ffffff; stroke: #20b7af; stroke-width: 2px;" cx="100" cy="100" r="3"></circle>
+</svg>
+
+<div class="container-fluid mg-content">
+
+    <div id="errMsg"></div>
+
+    <section id='index' class='active'>
+
+        <div class="formLogin container" id="container">
+            <div class="form-container sign-in-container">
+                <div id="form">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/1password2018.png" alt="dkfdfl">
+
+                    <label>
+                        <input id="form_pseudo" type="text" name="pseudo" placeholder="Entrez votre pseudo">
+                    </label>
+                    <input type="submit" class="btnConnnexion" value="Connexion" onclick="postLogin('https://192.168.75.13/api/v2/users/login')">
+                </div>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-right">
+                        <h1>Bienvenue sur Chatons.org</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+
+    <section id='groupes' class='inactive'>
+        <h2 id="userConnected"></h2>
+
+        <p>Créer un nouveau groupe :</p>
+        <label>
+            <input placeholder="Nom du groupe" id="form_groupe" type="text" name="groupe">
+        </label>
+        <input type="submit" value="Créer" class="btn btnCopains"
+               onclick="postGroupe('https://192.168.75.13/api/v2/groupes')">
+        <p><a href='#deco'>Déconnexion</a></p>
+
+        <hr>
+
+        <h2>Liste des groupes</h2>
+
+        <ul id='groupesList'>
+        </ul>
+        <br><br>
+    </section>
+
+    <section id='groupe' class='inactive'>
+        <h2 id="userConnected2"></h2>
+        <div id="montrerGroupe"></div>
+        <ul id="montrerBilletsDuGroupe"></ul>
+        <hr>
+        <p>Créer un nouveau billet :</p>
+        <label>
+            <input placeholder="Titre" id="titreBillet" type='text' name='titre'>
+        </label><br>
+        <label>
+            <textarea placeholder="Description" id="descriptionBillet" name="contenu"></textarea>
+        </label>
+        <br/>
+        <input type='submit' value='Envoyer' class="btn btnCopains" id="sendBillet">
+        <input type='submit' value='Modifier nom du groupe (*)' class="btn btn-warning" id="modifierNomGroupe">
+        <input type='submit' value='Supprimer' class="btn btn-danger" id="supprimerGroupe">
+        <br/>
+        <br/>
+
+        <p><b>(*) : Pour modifier le nom du groupe, veuillez changer son nom en cliquant dessus puis appuyez sur le bouton "Modifier nom du groupe".</b></p>
+
+        <p><a href='#groupes'>Liste des groupes</a></p>
+    </section>
+
+    <section id='billet' class='inactive'>
+        <h2 id="userConnected3"></h2>
+        <div id="montrerBillet"></div>
+        <ul id="montrerCommentairesDuBillet"></ul>
+        <hr>
+        <p>Ajouter un commentaire :</p>
+        <label>
+            <input type="text" name="commentaire" id="commentaireTexte">
+        </label>
+        <br/>
+        <input type="submit" value="Envoyer" class="btn btnCopains" id="postCommentaire">
+        <input type="submit" value="Modifier le billet" class="btn btn-warning" id="modifierBillet">
+        <input type="submit" value="Supprimer" class="btn btn-danger" id="supprimerBillet">
+        <br/>
+        <br/>
+        <p><b>(*) : Pour modifier le billet, veuillez faire les modifications des champs voulus en cliquant dessus puis appuyez sur le bouton "Modifier le billet".</b></p>
+
+
+        <p><a href="#groupe">Retour au groupe</a></p>
+        <p><a href="#deco">Se déconnecter</a></p>
+    </section>
+
+    <section id='users' class='inactive'>
+        <h2 id="userConnected4"></h2>
+        <div id='usersList'></div>
+        <p><a href='#deco'>Déconnexion</a></p>
+    </section>
+
+    <section id='deco' class='inactive'>
+        <h2 id="userConnected5"></h2>
+        <h2>Déconnexion</h2>
+        <input type="submit" id="disconnect" class="btn btnCopains" value="Se deconnecter">
+        <br/>
+        <br/>
+        <p><a href='#index'>Retour à la page d'accueil</a></p>
+    </section>
+
+</div>
+
+<!-- Script d'affichage Mustache-->
+
+<script id="templateGroupes" type="text/html">
+    {{^.}}<p>Aucun groupes.</p>{{/.}}
+    {{#.}}
+    <li>
+        <form action='#groupe'>
+            <button class='btn btnGroupe btnAjax' onclick="getValue()" value="{{.}}">
+                {{.}}
+            </button>
+        </form>
+    </li>
+    {{/.}}
+</script>
+
+<script id="templateGroupe" type="text/html">
+    <h2><b>Groupe : <span contenteditable='true'>{{nom}}</span></b></h2>
+    <h3>Description</h3>
+    <p id="grpDesc">
+        {{^description}}Aucune description.{{/description}}{{description}}
+    </p>
+    <h3>Membres</h3>
+    <ul id="grpMembres">
+        {{^membres}}Aucun membre.{{/membres}}
+        <li>{{membres}}</li>
+    </ul>
+    <h3>Billets</h3>
+</script>
+
+<script id="templateBilletsDuGroupe" type="text/html">
+    {{^.}}<p>Aucun billets.</p>{{/.}}
+    {{#.}}
+    <li>
+        <form action='#billet'>
+            <button class='btn btnBillets btnAjax' onclick="getValue()" value="{{.}}">
+                {{.}}
+            </button>
+        </form>
+    </li>
+    {{/.}}
+</script>
+
+<script id="templateBillet" type="text/html">
+    <br>
+    <p id="titreAModifier">
+        <b>Titre : </b>
+        <span contenteditable="true"> {{titre}} </span>
+    </p>
+    <p id="contenuAModifier">
+        <b>Contenu : </b>
+        <span contenteditable="true"> {{contenu}} </span>
+    </p>
+    <p>
+        <b>Auteur : </b>
+        {{auteur}}
+    </p>
+
+    <h3>Commentaires : </h3>
+</script>
+
+<script id="templateCommentairesBillet" type="text/html">
+    {{^.}}<p>Aucun commentaires.</p>{{/.}}
+    {{#.}}
+    <li>
+        <form action='#groupe'>
+            <button class='btn btnGroupe btnAjax' onclick="getValue()" value="{{.}}">
+                {{.}}
+            </button>
+        </form>
+    </li>
+    {{/.}}
+</script>
+
+<script id="templateUtilisateurs" type="text/html">
+    <h2>Liste des utilisateurs</h2>
+    {{^.}}<p>Aucun utilisateurs.</p>{{/.}}
+    <ul>
+        {{#.}}
+        <li>
+            {{.}}
+        </li>
+        {{/.}}
+    </ul>
+</script>
+
+<script>
+
+// Fonctions fetch
+
+    async function fetchUtilisateurs(url) {
+        try {
+            const data = await getData(url);
+            let tab = [];
+            data.forEach(elmnt => tab.push(elmnt.split('/').slice(-1)[0]));
+            displayMustacheTemplate(tab,"templateUtilisateurs","usersList");
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function fetchGroupes(url) {
+        try {
+            const data = await getData(url);
+            let tab = [];
+            data.forEach(elmnt => tab.push(elmnt.split('/').slice(-1)[0]));
+            displayMustacheTemplate(tab,"templateGroupes","groupesList");
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function fetchGroupe(url) {
+        try {
+            const data = await getData(url);
+            displayMustacheTemplate(data,"templateGroupe","montrerGroupe");
+            let groupeSelected = $('#montrerGroupe').val();
+            await fetchBilletsGroupe('https://192.168.75.13/api/v2/groupes/' + groupeSelected + '/billets');
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function fetchBilletsGroupe(url) {
+        try {
+            const data = await getData(url);
+            let tab = [];
+            data.forEach(elmnt => tab.push(elmnt.split('/').slice(-1)[0]));
+            displayMustacheTemplate(tab,"templateBilletsDuGroupe","montrerBilletsDuGroupe");
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function fetchBillet(url) {
+        try {
+            const data = await getData(url);
+            displayMustacheTemplate(data,"templateBillet","montrerBillet");
+            for (let i = 0; i < data.commentaires.length; i++) {
+                await fetchCommentairesBillet(data.commentaires[i])
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function fetchCommentairesBillet(url) {
+        try {
+            const data = await getData(url);
+	    let taille = $('#montrerCommentairesDuBillet').children().length;
+            let commentaire = data.texte;
+	    $('#montrerCommentairesDuBillet').append(
+		"<li>" +
+        " <span class='spanCom' contenteditable='true' id=\"com" + taille + "\"> " + commentaire + "</span>" +
+        " <button class=\"btnSmallEdit\" onclick=\"modifierCommentaire('" + url + "', " + taille + ")\"><i class=\"far fa-edit\"></i></button>" +
+		" <button class=\"btnSmallDelete\" onclick=\"supprimerCommentaire('" + url + "')\"><i class=\"fas fa-trash-alt\"></i></button> " +
+		" </li>"
+	    );
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getData(url = '') {
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+                Accept: "application/json",
+                'Content-Type': 'application/json'
+            },
+        });
+        return response.json();
+    }
+
+    function getValue() {
+        return event.target.value;
+    }
+
+    $(document).ready(function () {
+        $(document).on("click", "#sendBillet", function () {
+            let groupeSelected = $('#montrerGroupe').val();
+            postBillet('https://192.168.75.13/api/v2/groupes/' + groupeSelected + '/billets');
+        });
+
+        $(document).on("click", "#postCommentaire", function () {
+            $('#montrerCommentairesDuBillet').empty();
+            let groupeSelected = $('#montrerGroupe').val();
+            let billetSelected = $('#montrerBillet').val();
+            postCommentaire('https://192.168.75.13/api/v2/groupes/' + groupeSelected + '/billets/' + billetSelected + '/commentaires');
+        });
+
+        $(document).on("click", "#disconnect", function () {
+            $('.navSite').hide();
+            postDeconnecter('https://192.168.75.13/api/v2/users/logout');
+        });
+
+        $(document).on("click", ".btnGroupe", function () {
+            $('#montrerGroupe').val(getValue());
+            $('#montrerGroupe').empty();
+            $('#montrerBilletsDuGroupe').empty();
+            let groupeSelected = $('#montrerGroupe').val();
+            fetchGroupe('https://192.168.75.13/api/v2/groupes/' + groupeSelected);
+
+        });
+
+        $(document).on("click", ".btnBillets", function () {
+            $('#montrerBillet').val(getValue()).html("<h3><b>id du Billet sélectionné : " + getValue() + " </b></h3>");
+            $('#montrerCommentairesDuBillet').empty();
+            let groupeSelected = $('#montrerGroupe').val();
+            let billetSelected = $('#montrerBillet').val();
+            fetchBillet('https://192.168.75.13/api/v2/groupes/' + groupeSelected + '/billets/' + billetSelected);
+        });
+
+        $(document).on("click", "#modifierNomGroupe", function () {
+            putNomGroupe('https://192.168.75.13/api/v2/groupes/' + $('#montrerGroupe').val());
+        });
+
+        $(document).on("click", "#supprimerGroupe", function () {
+            supprimerGroupe('https://192.168.75.13/api/v2/groupes/' + $('#montrerGroupe').val());
+        });
+
+        $(document).on("click", "#supprimerBillet", function () {
+            supprimerBillet('https://192.168.75.13/api/v2/groupes/' + $('#montrerGroupe').val() + '/billets/' + $('#montrerBillet').val());
+        });
+
+        $(document).on("click", "#modifierBillet", function () {
+            modifierBillet('https://192.168.75.13/api/v2/groupes/' + $('#montrerGroupe').val() + '/billets/' + $('#montrerBillet').val());
+        });
+
+        $('.btnConnnexion').click(function(){
+            if($('#form_pseudo').val() !== ''){
+                $('.navSite').show();
+            }
+        });
+
+    });
+
+
+    window.addEventListener(
+        'hashchange',
+        () => {
+            show(window.location.hash);
+        }
+    );
+
+    function show(hash) {
+        $('.active')
+            .removeClass('active')
+            .addClass('inactive');
+        $(hash)
+            .removeClass('inactive')
+            .addClass('active');
+    }
+</script>
+
+</body>
+</html>
